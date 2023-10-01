@@ -1,26 +1,43 @@
 import React from 'react';
-import logo from './logo.svg';
+import { Canvas } from '@react-three/fiber';
+import { Physics } from '@react-three/cannon';
 import './App.css';
+import { SpringValue, useSpring, to } from 'react-spring';
+import { Vector3 } from 'three';
+import {VelocityShader} from "three/examples/jsm/shaders/VelocityShader";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+const Ball = React.lazy(() => import("./components/Ball/Ball"));
+
+interface AppSpringProps {
+  // position: [number, number, number];
+  // velocity: [number, number, number];
 }
+
+
+const App: React.FC = () => {
+  // const springProps = useSpring<AppSpringProps>({
+  //   position: [0, 0, 0],
+  //   velocity: [2, 1, 0],
+  // });
+
+  // const positionVector = to(springProps.position, (x, y, z) => new Vector3(x, y, z));
+
+  return (
+    <main className="main">
+    <React.Suspense fallback={null}>
+    <Canvas className="canvas"  camera={ { fov: 150, near: 0.1, far: 1000, position: [0, 0, 5] } }>
+      <Physics>
+        <ambientLight intensity={0.5} />
+        <pointLight position={[-5, 5, 9]} intensity={0.5} decay={0} />
+        <group>
+        {/*  <Ball position={springProps.position} velocity={springProps.velocity} />*/}
+          <Ball position={[0, 0, 0]} />
+        </group>
+      </Physics>
+    </Canvas>
+    </React.Suspense>
+    </main>
+  );
+};
 
 export default App;
