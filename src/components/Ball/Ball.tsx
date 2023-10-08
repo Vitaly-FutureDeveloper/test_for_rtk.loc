@@ -1,43 +1,39 @@
-import React, { useRef } from 'react';
-import { useFrame } from '@react-three/fiber';
-import { useSphere } from '@react-three/cannon';
-import { animated, config, useSpring } from '@react-spring/three';
-import { Sphere } from "@react-three/drei";
+import React, {useEffect, useRef, useState} from 'react';
+import {useFrame} from '@react-three/fiber';
+import {getRand, getRandomNumber} from '../../utils/getRandoms';
 
-interface BallProps {
-  position: [number, number, number];
-  velocity: [number, number, number];
-}
 
-const Ball: React.FC<BallProps> = ({ position, velocity }) => {
-  const [ref] = useSphere(() => ({
-    mass: 100,
-    friction: 1,
-    args: [1],
-    position: position,
-    velocity: velocity,
-    onCollide: () => {
-      console.log('collide');
-    },
-  })) as any;
+
+const Ball: React.FC = () => {
+
+  const [randX, setRandX] = useState(getRand());
+  const [randY, setRandY] = useState(getRand());
+  const [randZ, setRandZ] = useState(getRand());
+
+  useEffect(() => {
+    setTimeout(() => {
+      setRandX(-randX);
+      setRandY(-randY);
+      setRandZ(-randZ);
+    }, getRandomNumber(1500, 3500));
+  }, [randX, randY]);
 
   const meshRef = useRef<any>();
 
   useFrame(() => {
     if (meshRef.current) {
-      meshRef.current.position.copy(ref.current.position);
+      meshRef.current.position.x += randX;
+      meshRef.current.position.y += randY;
+      meshRef.current.position.z += randZ;
     }
   });
 
-  const springProps = useSpring({ position: position, config: config.default });
 
   return (
-    <animated.mesh ref={meshRef} position={springProps.position}>
-      {/*<mesh ref={ref}>*/}
-      <Sphere args={[1, 30, 30]} />
-      <meshStandardMaterial color="red" />
-      {/*</mesh>*/}
-    </animated.mesh>
+    <mesh ref={meshRef}>
+      <sphereGeometry args={[0.3, 30, 30]}/>
+      <meshStandardMaterial color="red"/>
+    </mesh>
   );
 };
 
