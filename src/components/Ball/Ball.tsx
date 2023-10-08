@@ -3,7 +3,6 @@ import {useFrame} from '@react-three/fiber';
 import {getRand, getRandomNumber} from '../../utils/getRandoms';
 
 
-
 const Ball: React.FC = () => {
 
   const [randX, setRandX] = useState(getRand());
